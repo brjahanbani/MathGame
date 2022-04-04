@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { debounceTime, delay, filter } from 'rxjs/operators';
 import { MathValidations } from '../_validations/math-validations';
 
 @Component({
@@ -26,16 +27,22 @@ export class EquationComponent implements OnInit {
     return this.mathForm.get('b')?.value;
   }
   ngOnInit(): void {
-    this.sub = this.mathForm.statusChanges.subscribe((response) => {
-      if (response === 'INVALID') {
-        return;
-      }
-      this.mathForm.setValue({
-        a: this.randomNumber(),
-        b: this.randomNumber(),
-        answer: '',
+    this.sub = this.mathForm.statusChanges
+      .pipe(
+        // delay(500),
+        debounceTime(1000), //Digikala search
+        filter((response) => response === 'VALID')
+      ) //for deleting down if
+      .subscribe((response) => {
+        // if (response === 'INVALID') {
+        //   return;
+        // }
+        this.mathForm.setValue({
+          a: this.randomNumber(),
+          b: this.randomNumber(),
+          answer: '',
+        });
       });
-    });
   }
 
   randomNumber() {
