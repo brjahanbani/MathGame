@@ -13,7 +13,12 @@ export class EquationComponent implements OnInit {
     answer: new FormControl(''),
   });
   constructor() {}
-
+  public get a() {
+    return this.mathForm.get('a')?.value;
+  }
+  public get b() {
+    return this.mathForm.get('a')?.value;
+  }
   ngOnInit(): void {}
 
   randomNumber() {
