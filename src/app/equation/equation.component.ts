@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { MathValidations } from '../_validations/math-validations';
 
 @Component({
@@ -8,6 +9,7 @@ import { MathValidations } from '../_validations/math-validations';
   styleUrls: ['./equation.component.css'],
 })
 export class EquationComponent implements OnInit {
+  public sub: Subscription | undefined;
   mathForm = new FormGroup(
     {
       a: new FormControl(this.randomNumber()),
@@ -23,9 +25,24 @@ export class EquationComponent implements OnInit {
   public get b() {
     return this.mathForm.get('b')?.value;
   }
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.sub = this.mathForm.statusChanges.subscribe((response) => {
+      if (response === 'INVALID') {
+        return;
+      }
+      this.mathForm.setValue({
+        a: this.randomNumber(),
+        b: this.randomNumber(),
+        answer: '',
+      });
+    });
+  }
 
   randomNumber() {
     return Math.floor(Math.random() * 50);
+  }
+
+  ngOnDestroy() {
+    this.sub?.unsubscribe(); //for eliminating adding excess subs to RAM
   }
 }
