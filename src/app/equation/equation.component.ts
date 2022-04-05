@@ -11,6 +11,9 @@ import { MathValidations } from '../_validations/math-validations';
 })
 export class EquationComponent implements OnInit {
   public sub: Subscription | undefined;
+  public correct: number = 0;
+  public secondPerSolution = 0;
+
   mathForm = new FormGroup(
     {
       a: new FormControl(this.randomNumber()),
@@ -26,14 +29,21 @@ export class EquationComponent implements OnInit {
   public get b() {
     return this.mathForm.get('b')?.value;
   }
+
   ngOnInit(): void {
+    const startTime = new Date();
+
     this.sub = this.mathForm.statusChanges
       .pipe(
         // delay(500),
-        debounceTime(1000), //Digikala search
+        debounceTime(400), //Digikala search
         filter((response) => response === 'VALID')
       ) //for deleting down if
       .subscribe((response) => {
+        this.correct++;
+        this.secondPerSolution =
+          (new Date().getTime() - startTime.getTime()) / this.correct / 1000;
+
         // if (response === 'INVALID') {
         //   return;
         // }
