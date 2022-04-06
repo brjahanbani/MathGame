@@ -1,9 +1,22 @@
-<form [formGroup]="mathForm">
-  {{a}} + {{b}} = <input type="number" formControlName="answer">
-</form>
+<br>
+<div class="container">
 
-<div>Correct: {{correct}} </div>
-<div>Second per Solution: {{secondPerSolution}} </div>
-<div>Form is Valid: {{mathForm.valid}} </div>
-<div>Form is Value: {{mathForm.value | json}} </div>
-<div>Form Group Errors: {{mathForm.errors | json}} </div>
+  <form [formGroup]="mathForm">
+    <span class="badge bg-danger">{{a}}</span> + <span class="badge bg-dark">{{b}}</span> =
+    <div class="form-floating mb-3">
+      <input type="number" formControlName="answer" id="floatingInput" class="form-control">
+      <label for="floatingInput">Type Answer...</label>
+    </div>
+  </form>
+
+  <div>Correct:
+    <span class="badge bg-primary">{{correct}}</span>
+
+  </div>
+
+  <div>Second per Solution: <span class="badge bg-success">{{secondPerSolution}}</span> </div>
+  <div>Form is Valid: {{mathForm.valid}} </div>
+  <div>Form is Value: {{mathForm.value | json}} </div>
+  <div>Form Group Errors: {{mathForm.errors | json}} </div>
+
+</div>
