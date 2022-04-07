@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { debounceTime, delay, filter } from 'rxjs/operators';
+import { debounceTime, delay, filter, scan } from 'rxjs/operators';
 import { MathValidations } from '../_validations/math-validations';
 
 @Component({
@@ -31,16 +31,25 @@ export class EquationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const startTime = new Date();
+    // const startTime = new Date();
 
     this.sub = this.mathForm.statusChanges
       .pipe(
         // delay(500),
         debounceTime(400), //Digikala search
-        filter((response) => response === 'VALID')
+        filter((response) => response === 'VALID'),
+        scan(
+          (acc) => {
+            return {
+              numberSolved: this.correct++,
+              startTime: acc.startTime,
+            };
+          },
+          { startTime: new Date() }
+        )
       ) //for deleting down if
-      .subscribe((response) => {
-        this.correct++;
+      .subscribe(({ startTime }) => {
+        // this.correct++;
         this.secondPerSolution =
           (new Date().getTime() - startTime.getTime()) / this.correct / 1000;
 
